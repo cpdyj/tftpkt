@@ -23,12 +23,14 @@ class UDPSocket(val ch: DatagramChannel, val looper2: Looper2) {
         println("handler")
         val l = LinkedList<CancellableContinuation<Unit>>()
         locker.withLock {
-            val sa = ch.receive(buf)
-            buf.flip()
-            val arr = ByteArray(buf.limit())
-            buf.get(arr)
-            recvList.push(sa to arr)
-            buf.clear()
+            while (true) {
+                val sa = ch.receive(buf) ?: break
+                buf.flip()
+                val arr = ByteArray(buf.limit())
+                buf.get(arr)
+                recvList.push(sa to arr)
+                buf.clear()
+            }
             l.addAll(readBlockList)
             readBlockList.clear()
         }
