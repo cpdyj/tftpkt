@@ -26,3 +26,14 @@ tasks.test {
         events("passed", "skipped", "failed")
     }
 }
+
+tasks.compileKotlin {
+    kotlinOptions {
+        this.freeCompilerArgs = this.freeCompilerArgs + listOf("-Xopt-in=kotlin.RequiresOptIn")
+    }
+}
+tasks.compileTestKotlin {
+    kotlinOptions {
+        this.freeCompilerArgs = this.freeCompilerArgs + listOf("-Xopt-in=kotlin.RequiresOptIn")
+    }
+}
