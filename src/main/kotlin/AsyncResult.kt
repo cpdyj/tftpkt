@@ -37,11 +37,7 @@ class AsyncResult<T> {
     fun tryFail(c: Throwable) {
         locker.withLock {
             if (done) return
-            done = true
-            succeed = false
-            result = null
-            cause = c
-            condition.signalAll()
+            fail(c)
         }
     }
 

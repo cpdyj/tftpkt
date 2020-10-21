@@ -11,4 +11,13 @@ internal class OptionTest {
             Option.readOption(bs, bs.indices)
         )
     }
+
+    @Test
+    fun test2() {
+        val a = "[116, 105, 109, 101, 111, 117, 116, 0, 52, 53, 0]".let(::str2Bytes)
+        assertEquals(
+            Option("timeout".encodeToByteArray(), "timeout", "45") to 11,
+            Option.readOption(a, a.indices)
+        )
+    }
 }
