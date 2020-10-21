@@ -29,7 +29,3 @@ class TFTPServer {
 }
 
 
-fun main() {
-    TFTPServer().begin()
-
-}
