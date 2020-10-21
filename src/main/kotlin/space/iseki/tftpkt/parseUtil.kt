@@ -64,3 +64,4 @@ internal inline fun cerror(s: String): Nothing = throw ClientError(s)
 internal class ClientError(val msg: String) : RuntimeException("client error: $msg")
 
 
+internal fun processCString(s: String) = (s.replace('\u0000', ' ') + "\u0000").encodeToByteArray()

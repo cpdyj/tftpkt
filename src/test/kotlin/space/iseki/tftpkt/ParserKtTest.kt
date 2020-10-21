@@ -19,4 +19,15 @@ internal class ParserKtTest {
         val target = byteArrayOf(0, 6, 1, 2, 3, 4, 0, 'A'.toByte(), 'B'.toByte(), 0)
         assertEquals(target.toList(), createOACK(list).toList())
     }
+
+    @Test
+    fun testCStringEncoder() {
+        repeat(100) {
+            val s = buildString {
+                (1..100).map { (Math.random() * 65535).toChar() }.forEach(::append)
+            }
+            val a = processCString(s)
+            check(a.indexOf(0) == a.lastIndex) { "detected unexpected zero at ${a.indexOf(0)} in ${a.toList()}" }
+        }
+    }
 }
