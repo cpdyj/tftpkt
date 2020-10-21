@@ -1,6 +1,7 @@
 plugins {
     java
     kotlin("jvm") version "1.4.10"
+    jacoco
 }
 
 group = "space.iseki"
@@ -29,11 +30,20 @@ tasks.test {
 
 tasks.compileKotlin {
     kotlinOptions {
+        jvmTarget = "1.8"
         this.freeCompilerArgs = this.freeCompilerArgs + listOf("-Xopt-in=kotlin.RequiresOptIn")
     }
 }
 tasks.compileTestKotlin {
     kotlinOptions {
+        jvmTarget = "1.8"
         this.freeCompilerArgs = this.freeCompilerArgs + listOf("-Xopt-in=kotlin.RequiresOptIn")
     }
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
 }
