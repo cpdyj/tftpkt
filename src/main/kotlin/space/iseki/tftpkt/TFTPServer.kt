@@ -1,10 +1,8 @@
 package space.iseki.tftpkt
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.net.InetSocketAddress
+import java.net.SocketAddress
 import java.nio.channels.DatagramChannel
 
 class TFTPServer {
@@ -18,7 +16,7 @@ class TFTPServer {
         scope.launch {
             while (isActive) {
                 val (sa, packet) = server.readPacket()
-                val req = parseRWQ(packet)
+                handleRequest(scope, packet, sa)
             }
         }.invokeOnCompletion {
             close()
@@ -27,7 +25,12 @@ class TFTPServer {
 
     fun close() {
         looper.close()
+        scope.cancel()
     }
 }
 
+
+internal fun handleRequest(scope: CoroutineScope, packet: ByteArray, sa: SocketAddress) = scope.launch {
+
+}
 
