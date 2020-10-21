@@ -60,3 +60,5 @@ internal inline fun ccheck(value: Boolean, lazyMessage: () -> Any) {
 
 internal inline fun cerror(s: String): Nothing = throw ClientError(s)
 internal class ClientError(val msg: String) : RuntimeException("client error: $msg")
+
+

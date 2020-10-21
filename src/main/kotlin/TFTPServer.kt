@@ -15,10 +15,8 @@ class TFTPServer {
         val server = UDPSocket(sc, looper)
         scope.launch {
             while (isActive) {
-                println("wait")
                 val (sa, packet) = server.readPacket()
-                println(sa)
-                println(packet.toList())
+                val req = parseRWQ(packet)
             }
         }.invokeOnCompletion {
             close()
