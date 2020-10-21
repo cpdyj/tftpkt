@@ -16,7 +16,7 @@ internal class NullTerminatedStringReader(val bytes: ByteArray, val range: IntRa
         private set
 
     /**
-     * @return next byte after reading
+     * @return next byte position after reading
      */
     fun nextString(): String? {
         for (i in pos..range.last) {
@@ -31,15 +31,14 @@ internal class NullTerminatedStringReader(val bytes: ByteArray, val range: IntRa
 }
 
 /**
- * @return next byte after reading
+ * @return next byte position after reading
  */
 internal inline fun readCStyleString(bytes: ByteArray, start: Int) = readCStyleString(bytes, start..bytes.lastIndex)
 
 /**
- * @return next byte after reading
+ * @return next byte position after reading
  */
 internal fun readCStyleString(bytes: ByteArray, range: IntRange = bytes.indices): Pair<String, Int>? {
-//    check(range.first in bytes.indices && range.last in bytes.indices)
     for (i in range) {
         if (bytes[i] == CNULL) {
             return String(bytes, range.first, i - range.first) to i + 1
