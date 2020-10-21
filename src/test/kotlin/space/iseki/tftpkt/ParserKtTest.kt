@@ -30,4 +30,11 @@ internal class ParserKtTest {
             check(a.indexOf(0) == a.lastIndex) { "detected unexpected zero at ${a.indexOf(0)} in ${a.toList()}" }
         }
     }
+
+    @Test
+    fun testCreateErrorPacket() {
+        val e = ClientError("test")
+        val packet = "0,5,0,0,116, 101, 115, 116,0".let(::str2Bytes).toList()
+        assertEquals(packet, e.createErrorPacket().toList())
+    }
 }

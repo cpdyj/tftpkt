@@ -20,7 +20,7 @@ internal fun createOACK(list: List<Option>): ByteArray {
 internal fun parseRWQ(bytes: ByteArray): Request {
     val (filename, modeOff) = readCStyleString(bytes, 2) ?: cerror("parse filename fail")
     val (mode, optOff) = readCStyleString(bytes, modeOff) ?: cerror("parse mode fail")
-    check(mode.toLowerCase() == "octet") { "unsupported mode: $mode" }
+    ccheck(mode.toLowerCase() == "octet") { "unsupported mode: $mode" }
     var p = optOff
     val opts = buildMap<String, Option> {
         while (p in bytes.indices) {

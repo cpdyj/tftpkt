@@ -63,5 +63,13 @@ internal inline fun ccheck(value: Boolean, lazyMessage: () -> Any) {
 internal inline fun cerror(s: String): Nothing = throw ClientError(s)
 internal class ClientError(val msg: String) : RuntimeException("client error: $msg")
 
+internal fun ClientError.createErrorPacket(): ByteArray {
+    val arr = processCString(msg)
+    return ByteArray(arr.size + 4).also {
+        it[1] = 5
+        arr.copyInto(it, 4)
+    }
+}
+
 
 internal fun processCString(s: String) = (s.replace('\u0000', ' ') + "\u0000").encodeToByteArray()

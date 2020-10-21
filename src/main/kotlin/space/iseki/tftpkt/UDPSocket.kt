@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
-class UDPSocket(val ch: DatagramChannel, val looper2: Looper2) {
+class UDPSocket(val ch: DatagramChannel, val looper: Looper, val sa: SocketAddress? = null) {
     init {
         ch.configureBlocking(false)
     }
@@ -20,25 +20,25 @@ class UDPSocket(val ch: DatagramChannel, val looper2: Looper2) {
     private val locker = ReentrantLock()
     private val readBlockList = LinkedList<CancellableContinuation<Unit>>()
     private val recvList = LinkedList<Pair<SocketAddress, ByteArray>>()
-    private val buf = ByteBuffer.allocate(1024)
+    private val rbuf = ByteBuffer.allocate(1024)
     val handler: (Int) -> Unit = {
         println("handler")
         val l = LinkedList<CancellableContinuation<Unit>>()
         locker.withLock {
             while (true) {
-                val sa = ch.receive(buf) ?: break
-                buf.flip()
-                val arr = ByteArray(buf.limit())
-                buf.get(arr)
+                val sa = ch.receive(rbuf) ?: break
+                rbuf.flip()
+                val arr = ByteArray(rbuf.limit())
+                rbuf.get(arr)
                 recvList.push(sa to arr)
-                buf.clear()
+                rbuf.clear()
             }
             l.addAll(readBlockList)
             readBlockList.clear()
         }
         l.forEach { it.resume(Unit, null) }
     }
-    val sk = looper2.addChannel(ch, handler).await()
+    val sk = looper.addChannel(ch, handler).await()
 
     private val mutex = Mutex()
 
@@ -64,6 +64,13 @@ class UDPSocket(val ch: DatagramChannel, val looper2: Looper2) {
         }
     }
 
+    suspend fun writePacket(
+        data: ByteArray,
+        sa: SocketAddress = this.sa ?: error("need specific remote SocketAddress"),
+    ) {
+
+        ch.send(ByteBuffer.wrap(data), sa)
+    }
 
 }
 

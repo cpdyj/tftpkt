@@ -9,7 +9,7 @@ import kotlin.math.min
 internal fun openUDPChannelRandomPort(portRange: IntRange = 16384..65535, maxRetry: Int = 8): DatagramChannel? {
     check(maxRetry > 0) { "maxRetry < 1" }
     check(portRange.first in 0..65535 && portRange.last in 0..65535) { "portRange invalid: $portRange" }
-    val size = portRange.run { last - first }
+    val size = portRange.run { last - first + 1 }
     check(size > 0) { "size < 1" }
     val ch = DatagramChannel.open()
     try {

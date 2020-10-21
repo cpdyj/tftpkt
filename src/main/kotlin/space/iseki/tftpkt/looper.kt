@@ -8,7 +8,7 @@ import java.util.*
 
 const val LOOPER_CLOSED = 1 shl 8
 
-class Looper2 {
+class Looper {
     private data class NewChannel(
         val ch: SelectableChannel,
         val handler: (Int) -> Unit,
