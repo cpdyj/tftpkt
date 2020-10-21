@@ -1,3 +1,5 @@
+package space.iseki.tftpkt
+
 internal data class Option(val rawKey: ByteArray, val normalizedName: String, val value: String) {
     companion object {
 

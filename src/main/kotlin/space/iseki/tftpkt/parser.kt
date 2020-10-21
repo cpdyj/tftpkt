@@ -1,3 +1,5 @@
+package space.iseki.tftpkt
+
 internal const val CNULL: Byte = 0
 internal const val OACK_MAGIC_LOW_BYTE: Byte = 6
 internal const val RRQ_OPCODE: Byte = 1

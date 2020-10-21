@@ -1,3 +1,5 @@
+package space.iseki.tftpkt
+
 interface ServerOption {
     val enableTimeoutInterval: Boolean
     val timeoutIntervalRange: IntRange

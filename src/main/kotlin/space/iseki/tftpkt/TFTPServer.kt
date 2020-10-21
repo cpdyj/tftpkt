@@ -1,3 +1,5 @@
+package space.iseki.tftpkt
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.isActive

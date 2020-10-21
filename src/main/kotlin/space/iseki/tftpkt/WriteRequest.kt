@@ -1,4 +1,6 @@
-internal class ReadRequest(
+package space.iseki.tftpkt
+
+internal class WriteRequest(
     val filename: String,
     val options: Map<String, Option>,
     serverOption: ServerOption,
@@ -6,21 +8,22 @@ internal class ReadRequest(
     private val timeoutOption = options["timeout"]
     private val tsizeOption = options["tsize"]?.takeIf { serverOption.enableTransferSize }
     private val blksizeOption = options["blksize"]
+
     val timeout = runCatching {
         timeoutOption?.value?.toInt()
             ?.takeIf { serverOption.enableTimeoutInterval && it in serverOption.timeoutIntervalRange }
     }.getOrElse { cerror("parse timeout fail") }
 
-    val needTransferSize = tsizeOption != null
+    val transferSize = runCatching { tsizeOption?.value?.toInt() }.getOrElse { cerror("parse transferSize fail") }
 
     val blockSize = runCatching {
         blksizeOption?.value?.toInt()?.takeIf { serverOption.enableBlockSize && it in serverOption.blockSizeRange }
     }.getOrElse { cerror("parse blockSize fail") }
 
-    fun needOACK() = !(timeout == null && !needTransferSize && blockSize == null)
+    fun needOACK() = !(timeout == null && transferSize == null && blockSize == null)
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun generateOACK(fileSize: Int?): ByteArray {
+    fun generateOACK(): ByteArray {
         check(needOACK())
         val ol = buildList<Option> {
             if (timeout != null) {
@@ -29,8 +32,8 @@ internal class ReadRequest(
             if (blockSize != null) {
                 add(blksizeOption!!)
             }
-            if (needTransferSize && fileSize != null) {
-                add(tsizeOption!!.copy(value = "$fileSize"))
+            if (transferSize != null) {
+                add(tsizeOption!!)
             }
         }
         return createOACK(ol)
