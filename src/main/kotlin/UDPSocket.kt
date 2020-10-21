@@ -44,6 +44,7 @@ class UDPSocket(val ch: DatagramChannel, val looper2: Looper2) {
         mutex.withLock {
             while (true) {
                 locker.withLock {
+                    check(sk.isValid)
                     if (recvList.isNotEmpty()) {
                         return recvList.pop()
                     }
