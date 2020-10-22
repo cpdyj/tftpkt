@@ -79,9 +79,10 @@ internal class TFTPConnection(
                     socket.writePacket(oack)
                     val p = socket.readPacket().second
                     ccheck(p[1] == b(4)) { "invalid ACK" }
+                    ackId = p.int(2 size 2)
                     TODO()
-//                    break
                 }
+
             }
 
         }
@@ -112,3 +113,4 @@ object defaultProvider : FileProvider {
         TODO("Not yet implemented")
     }
 }
+
